@@ -12,6 +12,7 @@ namespace miranj\redirector;
 
 use Craft;
 use craft\base\Plugin as BasePlugin;
+use miranj\redirector\models\Settings;
 
 
 class Plugin extends BasePlugin
@@ -34,4 +35,16 @@ class Plugin extends BasePlugin
         );
     }
     
+    
+    
+    // Protected Methods
+    // =========================================================================
+    
+    /**
+     * @inheritdoc
+     */
+    protected function createSettingsModel(): Settings
+    {
+        return new Settings();
+    }
 }
