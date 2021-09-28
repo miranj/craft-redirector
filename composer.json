@@ -7,7 +7,7 @@
     "craft-plugin",
     "craftcms",
     "redirect",
-    "url",
+    "url"
   ],
   "license": "MIT",
   "authors": [
