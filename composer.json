@@ -1,0 +1,38 @@
+{
+  "name": "miranj/craft-redirector",
+  "description": "A Craft CMS plugin for redirecting legacy URLs to entries.",
+  "type": "craft-plugin",
+  "version": "1.0.0-dev",
+  "keywords": [
+    "craft-plugin",
+    "craftcms",
+    "redirect",
+    "url",
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Miranj",
+      "homepage": "https://miranj.in"
+    }
+  ],
+  "support": {
+    "docs": "https://github.com/miranj/craft-redirector/blob/main/README.md",
+    "issues": "https://github.com/miranj/craft-redirector/issues",
+    "source": "https://github.com/miranj/craft-redirector"
+  },
+  "require": {
+    "craftcms/cms": "^3.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "miranj\\redirector\\": "src/"
+    }
+  },
+  "extra": {
+    "name": "Redirector",
+    "handle": "redirector",
+    "changelogUrl": "https://raw.githubusercontent.com/miranj/craft-redirector/main/CHANGELOG.md",
+    "class": "miranj\\redirector\\Plugin"
+  }
+}
