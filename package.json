@@ -18,6 +18,6 @@
     "prettier": "^2.8.4"
   },
   "lint-staged": {
-    "*.{js,css,md}": "prettier --write"
+    "*.{js,css,md,php,json}": "prettier --write --cache"
   }
 }
