@@ -150,10 +150,10 @@ class Redirector extends Component
     }
 
     /**
-     * @param string $redirectUrl
-     * @param int $status
+     * @param string $redirectUrl The redirect URL
+     * @param int $statusCode The response status code
      */
-    public function redirectToUrl(string $redirectUrl, int $status = 302)
+    public function redirectToUrl(string $redirectUrl, int $statusCode = 302)
     {
         if (!$redirectUrl) {
             return;
@@ -191,14 +191,14 @@ class Redirector extends Component
                 [
                     'url' => $request->getAbsoluteUrl(),
                     'dest' => $redirectUrl,
-                    'status' => $status,
+                    'status' => $statusCode,
                 ],
             ),
             __METHOD__,
         );
 
         // Redirect the request
-        $response->redirect($redirectUrl, $status)->send();
+        $response->redirect($redirectUrl, $statusCode)->send();
 
         try {
             Craft::$app->end();
