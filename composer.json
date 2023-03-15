@@ -17,12 +17,24 @@
     }
   ],
   "support": {
-    "docs": "https://github.com/miranj/craft-redirector/blob/main/README.md",
+    "docs": "https://github.com/miranj/craft-redirector/blob/dev/README.md",
     "issues": "https://github.com/miranj/craft-redirector/issues",
     "source": "https://github.com/miranj/craft-redirector"
   },
   "require": {
-    "craftcms/cms": "^3.0.0"
+    "craftcms/cms": "^3.7.0 || ^4.0.0",
+    "php": "^7.4 || ^8.0"
+  },
+  "require-dev": {
+    "craftcms/rector": "dev-main"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true,
+      "craftcms/plugin-installer": true
+    }
   },
   "autoload": {
     "psr-4": {
