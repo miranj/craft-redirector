@@ -1,6 +1,5 @@
 {
   "name": "miranj/craft-redirector",
-  "description": "A Craft CMS plugin for redirecting legacy URLs to entries.",
   "scripts": {
     "prepare": "husky install"
   },

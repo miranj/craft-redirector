@@ -1,6 +1,6 @@
 {
   "name": "miranj/craft-redirector",
-  "description": "A Craft CMS plugin for redirecting legacy URLs to entries.",
+  "description": "A Craft CMS plugin for redirecting URLs to entries.",
   "type": "craft-plugin",
   "version": "1.0.0-dev",
   "keywords": [
