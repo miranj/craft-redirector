@@ -1,0 +1,14 @@
+# OS Cruft
+.DS_Store
+
+# Package Managers
+vendor
+node_modules
+composer.lock
+package-lock.json
+
+# Environment
+.env
+.tm_properties
+.sublime-project
+.sublime-workspace

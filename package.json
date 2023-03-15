@@ -1,0 +1,23 @@
+{
+  "name": "miranj/craft-redirector",
+  "description": "A Craft CMS plugin for redirecting legacy URLs to entries.",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "author": "Miranj",
+  "private": "true",
+  "license": "MIT",
+  "prettier": {
+    "phpVersion": "7.4",
+    "singleQuote": true
+  },
+  "devDependencies": {
+    "@prettier/plugin-php": "^0.19.4",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
+    "prettier": "^2.8.4"
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
+  }
+}
