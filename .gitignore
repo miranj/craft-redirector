@@ -1,11 +1,13 @@
 # OS Cruft
 .DS_Store
 
+# Package Managers
+vendor
+node_modules
+composer.lock
+
 # Environment
 .env
 .tm_properties
 .sublime-project
 .sublime-workspace
-
-# Package Managers
-vendor
