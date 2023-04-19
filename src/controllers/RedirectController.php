@@ -55,7 +55,7 @@ class RedirectController extends Controller
             );
         }
 
-        if (!$redirectUrl) {
+        if (!is_string($redirectUrl)) {
             throw new BadRequestHttpException('Invalid URL.');
         }
 
