@@ -51,10 +51,10 @@ Open your terminal and run the following commands:
     cd /path/to/project
 
     # tell composer to use the plugin
-    composer require miranj/craft-redirector
+    composer require miranj/craft-redirector:dev-dev
 
     # tell Craft to install the plugin
-    ./craft install/plugin redirector
+    ./craft plugin/install redirector
 
 ## Requirements
 
