@@ -111,6 +111,7 @@ class Plugin extends BasePlugin
 
         // Ignore elements that don't use this field
         if (
+            !$element->fieldLayoutId ||
             !$element
                 ->getFieldLayout()
                 ->isFieldIncluded($this->settings->redirectField)
