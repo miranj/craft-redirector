@@ -11,6 +11,7 @@ namespace miranj\redirector\controllers;
 use Craft;
 use craft\web\Controller;
 use craft\web\View;
+use miranj\redirector\Plugin;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
@@ -30,9 +31,13 @@ class RedirectController extends Controller
      * @param int $statusCode The response status code
      * @return Response
      */
-    public function actionIndex(string $url, int $statusCode = 302): Response
-    {
+    public function actionIndex(
+        string $url,
+        int $statusCode = 302,
+        bool $preserveQueryString = false
+    ): Response {
         $redirectUrl = $url;
+        $request = Craft::$app->getRequest();
 
         if ($url) {
             // treat $url as a Twig object template string and pass it
@@ -49,14 +54,25 @@ class RedirectController extends Controller
             // replace only the matched path with the new target path inside
             // the *full* original URL so that pagination params are preserved
             $redirectUrl = str_replace(
-                Craft::$app->request->getPathInfo(),
+                $request->getPathInfo(),
                 $redirectUrl,
-                Craft::$app->request->fullPath,
+                $request->fullPath,
             );
         }
 
         if (!is_string($redirectUrl)) {
             throw new BadRequestHttpException('Invalid URL.');
+        }
+
+        // Append request query string if `preserveQueryString` is set
+        if (
+            $preserveQueryString ||
+            Plugin::getInstance()->settings->preserveQueryString
+        ) {
+            $pathQueryString = $request->getQueryStringWithoutPath();
+            if (!empty($pathQueryString)) {
+                $redirectUrl .= '?' . $pathQueryString;
+            }
         }
 
         return $this->redirect($redirectUrl, $statusCode);
