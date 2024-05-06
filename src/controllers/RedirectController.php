@@ -34,7 +34,8 @@ class RedirectController extends Controller
     public function actionIndex(
         string $url,
         int $statusCode = 302,
-        bool $preserveQueryString = false
+        bool $preserveQueryString = false,
+        bool $useQueryParams = false
     ): Response {
         $redirectUrl = $url;
         $request = Craft::$app->getRequest();
@@ -47,7 +48,7 @@ class RedirectController extends Controller
                 ->renderObjectTemplate(
                     $url,
                     Craft::$app->urlManager->getRouteParams(),
-                    [],
+                    $useQueryParams ? $request->getQueryParams() : [],
                     View::TEMPLATE_MODE_SITE,
                 );
 
