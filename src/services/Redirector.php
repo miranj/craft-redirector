@@ -34,10 +34,13 @@ class Redirector extends Component
      * Handle 404s by looking for a matching redirect for the currently
      * requested URL, and redirecting to that element's URI, if found
      */
-    public function handle404()
+    public function handle404ForFieldBasedRedirect()
     {
         Craft::info(
-            Craft::t('redirector', 'A 404 exception occurred'),
+            Craft::t(
+                'redirector',
+                'Checking 404 exception for field based redirect',
+            ),
             __METHOD__,
         );
 

@@ -17,7 +17,7 @@ use craft\helpers\UrlHelper;
 use craft\services\Plugins;
 use craft\web\ErrorHandler;
 use miranj\redirector\models\Settings;
-use miranj\redirector\services\Redirector;
+use miranj\redirector\services;
 use yii\base\Event;
 use yii\web\HttpException;
 
@@ -28,15 +28,19 @@ class Plugin extends BasePlugin
      */
     public static $fieldExists = false;
 
-    /**
-     * @inheritdoc
-     */
-    public function init()
+    public static function config(): array
+    {
+        // Set services as components
+        return [
+            'components' => [
+                'redirector' => services\Redirector::class,
+            ],
+        ];
+    }
+
+    public function init(): void
     {
         parent::init();
-
-        // Set services as components
-        $this->set('redirector', Redirector::class);
 
         $this->addEventListeners();
 
@@ -60,10 +64,6 @@ class Plugin extends BasePlugin
 
     public function onBeforeHandleException(ExceptionEvent $event)
     {
-        if (!self::$fieldExists) {
-            return;
-        }
-
         $exception = $event->exception;
         $request = Craft::$app->getRequest();
 
@@ -82,12 +82,17 @@ class Plugin extends BasePlugin
             $exception = $previousException;
         }
 
-        // If this is a 404 error, see if we can handle it
+        // Only proceed if this is a 404 error
         if (
-            $exception instanceof HttpException &&
-            $exception->statusCode === 404
+            !($exception instanceof HttpException) ||
+            $exception->statusCode !== 404
         ) {
-            $this->get('redirector')->handle404();
+            return;
+        }
+
+        // Field based redirects
+        if (self::$fieldExists) {
+            $this->redirector->handle404ForFieldBasedRedirect();
         }
     }
 
