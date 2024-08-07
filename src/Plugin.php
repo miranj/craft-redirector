@@ -13,6 +13,7 @@ use craft\base\Element;
 use craft\base\Plugin as BasePlugin;
 use craft\events\DefineRulesEvent;
 use craft\events\ExceptionEvent;
+use craft\helpers\ElementHelper;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
 use craft\web\ErrorHandler;
@@ -105,12 +106,26 @@ class Plugin extends BasePlugin
         /** @var Element */
         $element = $event->sender;
 
+        // ignore drafts, revisions, provisional drafts, etc
+        if (
+            !ElementHelper::isCanonical($element) ||
+            ElementHelper::isDraftOrRevision($element) ||
+            $element->isRevision
+        ) {
+            Craft::debug("Ignore non-canonical element: $element", __METHOD__);
+            return;
+        }
+
         // Ignore element types that don't have their own pages,
         // or are not in the configured include list
         if (
             !$element->hasUris() ||
             !in_array(get_class($element), $this->settings->elementTypes)
         ) {
+            Craft::debug(
+                "Ignore non-uri or unsupported element: $element",
+                __METHOD__,
+            );
             return;
         }
 
@@ -141,6 +156,11 @@ class Plugin extends BasePlugin
             'skipOnEmpty' => true,
             'skipOnArray' => true,
         ];
+
+        Craft::debug(
+            "Added URL cleaning rules for element: $element",
+            __METHOD__,
+        );
     }
 
     // Protected Methods
