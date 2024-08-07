@@ -25,7 +25,8 @@
     "php": "^7.4 || ^8.0"
   },
   "require-dev": {
-    "craftcms/rector": "dev-main"
+    "craftcms/rector": "dev-main",
+    "craftcms/phpstan": "dev-main"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
@@ -45,5 +46,8 @@
     "handle": "redirector",
     "changelogUrl": "https://raw.githubusercontent.com/miranj/craft-redirector/main/CHANGELOG.md",
     "class": "miranj\\redirector\\Plugin"
+  },
+  "scripts": {
+    "phpstan": "phpstan --memory-limit=1G"
   }
 }
