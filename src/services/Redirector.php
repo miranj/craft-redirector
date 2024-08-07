@@ -9,6 +9,7 @@ use craft\elements\Category;
 use craft\elements\Tag;
 use craft\helpers\UrlHelper;
 use miranj\redirector\Plugin;
+use yii\base\ExitException;
 
 /**
  * Redirector Service
