@@ -131,11 +131,16 @@ class Plugin extends BasePlugin
 
         // Ignore elements that don't use this field
         if (
-            !$element->fieldLayoutId ||
-            !$element
-                ->getFieldLayout()
-                ->isFieldIncluded($this->settings->redirectField)
+            !(
+                $element
+                    ->getFieldLayout()
+                    ->isFieldIncluded($this->settings->redirectField) ?? false
+            )
         ) {
+            Craft::debug(
+                "Field {$this->settings->redirectField} not found in element: $element",
+                __METHOD__,
+            );
             return;
         }
 
