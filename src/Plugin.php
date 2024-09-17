@@ -11,7 +11,7 @@ namespace miranj\redirector;
 use Craft;
 use craft\base\Element;
 use craft\base\Plugin as BasePlugin;
-use craft\events\DefineRulesEvent;
+use craft\events\ModelEvent;
 use craft\events\ExceptionEvent;
 use craft\helpers\ElementHelper;
 use craft\helpers\UrlHelper;
@@ -20,6 +20,7 @@ use craft\web\ErrorHandler;
 use miranj\redirector\models\Settings;
 use miranj\redirector\services;
 use yii\base\Event;
+use yii\validators\FilterValidator;
 use yii\web\HttpException;
 
 class Plugin extends BasePlugin
@@ -97,7 +98,10 @@ class Plugin extends BasePlugin
         }
     }
 
-    public function filterRedirectField(DefineRulesEvent $event)
+    // Apply filters to sanitise and prep data in the redirect field
+    // during EVENT_BEFORE_SAVE (instead of element validation rules)
+    // see: https://github.com/craftcms/cms/issues/15509
+    public function filterRedirectField(ModelEvent $event)
     {
         if (!self::$fieldExists) {
             return;
@@ -106,11 +110,15 @@ class Plugin extends BasePlugin
         /** @var Element */
         $element = $event->sender;
 
+        if ($element->propagating) {
+            Craft::debug("Ignore propagating element: $element", __METHOD__);
+            return;
+        }
+
         // ignore drafts, revisions, provisional drafts, etc
         if (
             !ElementHelper::isCanonical($element) ||
-            ElementHelper::isDraftOrRevision($element) ||
-            $element->isRevision
+            (!$element->firstSave && ElementHelper::isDraftOrRevision($element))
         ) {
             Craft::debug("Ignore non-canonical element: $element", __METHOD__);
             return;
@@ -135,35 +143,47 @@ class Plugin extends BasePlugin
                 $element
                     ->getFieldLayout()
                     ->isFieldIncluded($this->settings->redirectField) ?? false
-            )
+            ) ||
+            !$element->getFieldValue($this->settings->redirectField)
         ) {
             Craft::debug(
-                "Field {$this->settings->redirectField} not found in element: $element",
+                "Field {$this->settings->redirectField} empty or not found in element: $element",
                 __METHOD__,
             );
             return;
         }
 
+        // Apply filters
+        $filterRules = [];
+        Craft::debug(
+            "Applying URL cleaning rules for element: $element",
+            __METHOD__,
+        );
+
         // URL decode
-        $event->rules[] = [
-            'field:' . $this->settings->redirectField,
-            'filter',
+        $filterRules[] = [
             'filter' => 'urldecode',
             'skipOnEmpty' => true,
             'skipOnArray' => true,
         ];
 
         // Transform redirect URLs to be relative (domain-independent)
-        $event->rules[] = [
-            'field:' . $this->settings->redirectField,
-            'filter',
+        $filterRules[] = [
             'filter' => [UrlHelper::class, 'rootRelativeUrl'],
             'skipOnEmpty' => true,
             'skipOnArray' => true,
         ];
 
+        foreach ($filterRules as $filterConfig) {
+            $validator = new FilterValidator($filterConfig);
+            $validator->validateAttribute(
+                $element,
+                'field:' . $this->settings->redirectField,
+            );
+        }
+
         Craft::debug(
-            "Added URL cleaning rules for element: $element",
+            "Cleaned field {$this->settings->redirectField}: {$element->{$this->settings->redirectField}}",
             __METHOD__,
         );
     }
@@ -192,7 +212,7 @@ class Plugin extends BasePlugin
             [$this, 'onBeforeHandleException'],
         );
 
-        Event::on(Element::class, Element::EVENT_DEFINE_RULES, [
+        Event::on(Element::class, Element::EVENT_BEFORE_SAVE, [
             $this,
             'filterRedirectField',
         ]);
