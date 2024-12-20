@@ -147,7 +147,7 @@ class Redirector extends Component
         while (!$targetElement && ($elementType = array_shift($elementTypes))) {
             $query = $elementType::find();
             Craft::configure($query, $searchCriteria);
-            $targetElement = $query->one();
+            $targetElement = $query->cache()->one();
         }
 
         return $targetElement;
